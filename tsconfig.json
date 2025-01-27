@@ -1,41 +1,10 @@
+// tsconfig.json
 {
+  "extends": "./tsconfig.server.json",  // Extend the server config by default
   "compilerOptions": {
-    /* Language and Environment */
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "skipLibCheck": true,
-
-    /* JavaScript Support */
-    "allowJs": true,
-    "checkJs": true,
-
-    /* Interop Constraints */
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-
-    /* Type Checking */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "exactOptionalPropertyTypes": true,
-    "noImplicitReturns": true,
-    "noImplicitOverride": true,
-    "useUnknownInCatchVariables": true,
-
-    /* Output and Directories */
-    "outDir": "./dist",    /* Specify the directory for compiled files */
-    "rootDir": "./src"     /* Set the root directory for your source files */
+    "composite": true,
+    "tsBuildInfoFile": "tsconfig.tsbuildinfo"
   },
-
-  "include": [
-    "src/**/*"  /* Include all files under the src directory */
-  ],
-
-  "exclude": [
-    "node_modules",  /* Exclude node_modules directory */
-    "dist"           /* Exclude dist directory from being input */
-  ]
+  "include": ["server/**/*"],  // Optionally include other files that are common for both parts
+  "exclude": ["node_modules", "dist"]  // Exclude node_modules and dist
 }
