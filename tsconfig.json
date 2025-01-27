@@ -1,10 +1,33 @@
-// tsconfig.json
 {
-  "extends": "./tsconfig.server.json",  // Extend the server config by default
   "compilerOptions": {
-    "composite": true,
-    "tsBuildInfoFile": "tsconfig.tsbuildinfo"
+    "target": "ES2020",                      // Target version of JavaScript
+    "module": "ESNext",                       // Module system to use
+    "moduleResolution": "Bundler",            // Use bundler for module resolution
+    "skipLibCheck": true,                     // Skip library type checking (for performance)
+    "allowJs": false,                         // Do not compile JavaScript files
+    "checkJs": false,                         // Do not check JavaScript files
+    "esModuleInterop": true,                  // Allows default imports from modules with no default export
+    "allowSyntheticDefaultImports": true,     // Allow default imports for non-ESModule packages
+    "forceConsistentCasingInFileNames": true, // Ensure consistent casing in file names
+    "strict": true,                           // Enable all strict type-checking options
+    "noUnusedLocals": true,                   // Warn on unused locals
+    "noUnusedParameters": true,               // Warn on unused parameters
+    "noFallthroughCasesInSwitch": true,       // Warn on fallthrough in switch statements
+    "exactOptionalPropertyTypes": true,       // Ensure exact typing of optional properties
+    "noImplicitReturns": true,                // Warn on missing return statements in functions
+    "noImplicitOverride": true,               // Ensure that overriding methods must explicitly declare the override
+    "useUnknownInCatchVariables": true,       // Enforce that catch variables are of type 'unknown'
+    "outDir": "./dist",                       // Output compiled files to the 'dist' folder
+    "rootDir": "./server",                    // Ensure source files are under the 'server' folder
+    "declaration": true,                      // Generate declaration files (.d.ts)
+    "declarationDir": "./dist/types",         // Output declaration files in a separate folder
+    "sourceMap": true                         // Generate source maps for debugging
   },
-  "include": ["server/**/*"],  // Optionally include other files that are common for both parts
-  "exclude": ["node_modules", "dist"]  // Exclude node_modules and dist
+  "include": [
+    "server/**/*.ts"                          // Only include TypeScript files in the server folder
+  ],
+  "exclude": [
+    "server/dist",                            // Exclude the dist folder from the compilation process
+    "server/**/*.js"                          // Exclude all JavaScript files in the server folder
+  ]
 }

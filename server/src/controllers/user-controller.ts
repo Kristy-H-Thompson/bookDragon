@@ -4,10 +4,22 @@ import User from '../models/User.js';
 // import sign token function from auth
 import { signToken } from '../services/auth.js';
 
-// get a single user by either their id or their username
+// Define the User type (import if it's defined elsewhere)
+interface UserType {
+  _id: string;
+  username: string;
+  email: string;
+  password: string;
+  savedBooks: any[];
+  isCorrectPassword: (password: string) => Promise<boolean>;
+}
+
 export const getSingleUser = async (req: Request, res: Response) => {
   const foundUser = await User.findOne({
-    $or: [{ _id: req.user ? req.user._id : req.params.id }, { username: req.params.username }],
+    $or: [
+      { _id: (req.user as UserType)._id }, // Assert req.user is a UserType
+      { username: req.params.username }
+    ],
   });
 
   if (!foundUser) {
@@ -17,59 +29,48 @@ export const getSingleUser = async (req: Request, res: Response) => {
   return res.json(foundUser);
 };
 
-// create a user, sign a token, and send it back (to client/src/components/SignUpForm.js)
 export const createUser = async (req: Request, res: Response) => {
   const user = await User.create(req.body);
 
   if (!user) {
     return res.status(400).json({ message: 'Something is wrong!' });
   }
+
+  // Ensure that `user` is properly typed
   const token = signToken(user.username, user.password, user._id);
   return res.json({ token, user });
 };
 
-// login a user, sign a token, and send it back (to client/src/components/LoginForm.js)
 // {body} is destructured req.body
 export const login = async (req: Request, res: Response) => {
-  const user = await User.findOne({ $or: [{ username: req.body.username }, { email: req.body.email }] });
+  // Assert req.body to match the structure expected for login
+  const { username, email, password } = req.body;
+
+  // Type annotation ensures that `user` is correctly typed as `UserType`
+  const user = await User.findOne({
+    $or: [{ username }, { email }],
+  });
+
+  // Check if user exists (user could be null)
   if (!user) {
     return res.status(400).json({ message: "Can't find this user" });
   }
 
-  const correctPw = await user.isCorrectPassword(req.body.password);
+  // Explicitly assert the type of `user` to `UserType` for safe property access
+  const typedUser = user as UserType; // Assert `user` to `UserType`
 
-  if (!correctPw) {
-    return res.status(400).json({ message: 'Wrong password!' });
-  }
-  const token = signToken(user.username, user.password, user._id);
-  return res.json({ token, user });
-};
+  // Make sure we are accessing valid properties from `typedUser`
+  if (typedUser.username && typedUser.password && typedUser._id) {
+    const correctPw = await typedUser.isCorrectPassword(password);
 
-// save a book to a user's `savedBooks` field by adding it to the set (to prevent duplicates)
-// user comes from `req.user` created in the auth middleware function
-export const saveBook = async (req: Request, res: Response) => {
-  try {
-    const updatedUser = await User.findOneAndUpdate(
-      { _id: req.user._id },
-      { $addToSet: { savedBooks: req.body } },
-      { new: true, runValidators: true }
-    );
-    return res.json(updatedUser);
-  } catch (err) {
-    console.log(err);
-    return res.status(400).json(err);
-  }
-};
+    if (!correctPw) {
+      return res.status(400).json({ message: 'Wrong password!' });
+    }
 
-// remove a book from `savedBooks`
-export const deleteBook = async (req: Request, res: Response) => {
-  const updatedUser = await User.findOneAndUpdate(
-    { _id: req.user._id },
-    { $pull: { savedBooks: { bookId: req.params.bookId } } },
-    { new: true }
-  );
-  if (!updatedUser) {
-    return res.status(404).json({ message: "Couldn't find user with this id!" });
+    // Now that we know `typedUser` is a valid `UserType`, we can use its properties
+    const token = signToken(typedUser.username, typedUser.password, typedUser._id);
+    return res.json({ token, user });
+  } else {
+    return res.status(400).json({ message: 'User data is incomplete!' });
   }
-  return res.json(updatedUser);
 };
