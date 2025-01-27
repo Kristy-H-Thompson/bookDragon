@@ -1,7 +1,7 @@
 import express, { Application } from 'express';
 import path from 'node:path';
 import { ApolloServer } from 'apollo-server-express';
-import { typeDefs, resolvers } from './schemas'; // Ensure these are correctly imported
+import { typeDefs, resolvers } from './schemas'; 
 import db from './config/connection.js';
 import { authenticateToken } from './services/auth'; 
 

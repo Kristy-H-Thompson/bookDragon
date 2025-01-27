@@ -1,5 +1,5 @@
-import User from '../src/models/User';
-import Book from '../src/models/Book';  // Importing Book to use in the resolvers
+import User from '../models/User';
+import Book from '../models/Book';  // Importing Book to use in the resolvers
 import jwt from 'jsonwebtoken';
 
 export const resolvers = {
@@ -40,3 +40,4 @@ export const resolvers = {
     },
   },
 };
+
