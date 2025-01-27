@@ -1,7 +1,7 @@
 import './App.css';
 import { Outlet } from 'react-router-dom';
 import { ApolloProvider, InMemoryCache } from '@apollo/client';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom'; // This line can be kept
 import { ApolloClient } from '@apollo/client';
 import Navbar from './components/Navbar';
 
@@ -12,12 +12,12 @@ const client = new ApolloClient({
 
 function App() {
   return (
-    <>
-      <ApolloProvider client={client}>
-      <Navbar />
-      <Outlet />
-      </ApolloProvider>
-    </>
+    <ApolloProvider client={client}>
+      <Router> {/* Use BrowserRouter here */}
+        <Navbar />
+        <Outlet />
+      </Router>
+    </ApolloProvider>
   );
 }
 
