@@ -43,7 +43,19 @@ export const getUserFromToken = (token: string): JwtPayload | null => {
 
 
 export const signToken = (userId: string, email: string, username: string): string => {
-  const payload = { _id: userId, email, username };
-  const secretKey = process.env.JWT_SECRET_KEY || '';
-  return jwt.sign(payload, secretKey, { expiresIn: '1h' });
+  try {
+    const payload = { _id: userId, email, username };
+    const secretKey = process.env.JWT_SECRET_KEY;
+    
+    // Make sure the secret key exists
+    if (!secretKey) {
+      throw new Error('JWT_SECRET_KEY is not defined in environment variables.');
+    }
+
+    // Sign the token with the payload and secret key
+    return jwt.sign(payload, secretKey, { expiresIn: '1h' });
+  } catch (error) {
+    console.error('Error signing token:', error);
+    throw new Error('Failed to sign token');
+  }
 };
