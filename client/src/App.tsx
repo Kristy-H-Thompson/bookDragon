@@ -1,9 +1,9 @@
 import './App.css';
 import { Outlet } from 'react-router-dom';
 import { ApolloProvider, InMemoryCache } from '@apollo/client';
-import { BrowserRouter as Router } from 'react-router-dom'; // This line can be kept
 import { ApolloClient } from '@apollo/client';
 import Navbar from './components/Navbar';
+import { BrowserRouter } from 'react-router-dom'; // Import BrowserRouter
 
 const client = new ApolloClient({
   uri: '/graphql',
@@ -13,10 +13,10 @@ const client = new ApolloClient({
 function App() {
   return (
     <ApolloProvider client={client}>
-      <Router> {/* Use BrowserRouter here */}
+      <BrowserRouter> 
         <Navbar />
         <Outlet />
-      </Router>
+      </BrowserRouter>
     </ApolloProvider>
   );
 }

@@ -8,7 +8,6 @@ import { authenticateToken } from './services/auth.js';
 const app: any = express(); 
 const PORT = process.env.PORT || 3001;
 
-
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -25,16 +24,24 @@ const server = new ApolloServer({
   },
 });
 
-server.applyMiddleware({ app });
+const startServer = async () => {
+  // Wait for Apollo Server to start
+  await server.start();
+  
+  // Apply Apollo middleware after the server starts
+  server.applyMiddleware({ app });
 
+  // Serve static files if in production
+  if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../client/build')));
+  }
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
-}
+  // Connect to the database and start the server
+  db.once('open', () => {
+    app.listen(PORT, () =>
+      console.log(`🌍 Now listening on localhost:${PORT}${server.graphqlPath}`)
+    );
+  });
+};
 
-
-db.once('open', () => {
-  app.listen(PORT, () =>
-    console.log(`🌍 Now listening on localhost:${PORT}${server.graphqlPath}`)
-  );
-});
+startServer();

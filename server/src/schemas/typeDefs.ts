@@ -25,6 +25,7 @@ const typeDefs = gql`
 
   type Query {
     me: User
+    books: [Book]  # Added the books query here
   }
 
   type Mutation {
@@ -42,4 +43,4 @@ const typeDefs = gql`
   }
 `;
 
-export default typeDefs
+export default typeDefs;
