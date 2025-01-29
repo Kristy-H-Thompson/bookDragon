@@ -77,7 +77,8 @@ export const createUser = async (req: Request, res: Response) => {
     return res.status(400).json({ message: 'Something went wrong!' });
   }
 
-  const token = signToken(user.username, user.password, user._id);
+  const typedUser = user as UserType; // Type assertion
+  const token = signToken(typedUser.username, typedUser.password, typedUser._id);
   return res.json({ token, user });
 };
 

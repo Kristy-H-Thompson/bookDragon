@@ -1,8 +1,8 @@
-import User from '../models/User';
-import Book from '../models/Book';  // Importing Book to use in the resolvers
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
+import User from '../models/User.js';
+import Book from '../models/Book.js';  // Importing Book to use in the resolvers
 
-export const resolvers = {
+const resolvers = {
   Query: {
     me: async (_: any, __: any, { user }: any) => {
       return user; // `user` comes from the authMiddleware
@@ -41,3 +41,4 @@ export const resolvers = {
   },
 };
 
+export default resolvers
