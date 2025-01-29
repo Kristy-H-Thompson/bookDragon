@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import User from '../models/User.js'; 
 import { signToken } from '../services/auth.js'; 
-import Book, { BookDocument } from '../models/Book'; // Use BookDocument here
+import Book, { BookDocument } from '../models/Book'; // Import BookDocument for typing
 
 // Define the UserType interface
 interface UserType {
@@ -9,23 +9,23 @@ interface UserType {
   username: string;
   email: string;
   password: string;
-  savedBooks: BookDocument[]; // Use BookDocument here
+  savedBooks: BookDocument[]; // This expects an array of BookDocument, not Book model
   isCorrectPassword: (password: string) => Promise<boolean>;
 }
 
 // Define saveBook function
 export const saveBook = async (req: Request, res: Response) => {
   try {
-    const userId = (req.user as UserType)._id;
+    const userId = (req.user as UserType)._id; // Assuming user is attached to req via middleware
     const { bookId, title, authors, description, image, link } = req.body;
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).exec(); // Ensure you are working with the document
 
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    // Create a new Book document using Mongoose
+    // Create a new Book document instance (not model)
     const newBook = new Book({
       bookId,
       title,
@@ -35,7 +35,7 @@ export const saveBook = async (req: Request, res: Response) => {
       link,
     });
 
-    // Save the book details to the user's savedBooks array
+    // Push the BookDocument instance into the savedBooks array
     user.savedBooks.push(newBook);
     await user.save();
 
@@ -49,10 +49,10 @@ export const saveBook = async (req: Request, res: Response) => {
 // Define deleteBook function
 export const deleteBook = async (req: Request, res: Response) => {
   try {
-    const userId = req.user._id;
+    const userId = (req.user as UserType)._id; // Assuming user is attached to req
     const { bookId } = req.params;
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).exec(); // Ensure you are working with the document
 
     if (!user) {
       return res.status(400).json({ message: "User not found" });
@@ -87,7 +87,7 @@ export const login = async (req: Request, res: Response) => {
 
   const user = await User.findOne({
     $or: [{ username }, { email }],
-  });
+  }).exec();
 
   if (!user) {
     return res.status(400).json({ message: "Can't find this user" });
@@ -115,7 +115,7 @@ export const getSingleUser = async (req: Request, res: Response) => {
       { _id: (req.user as UserType)._id },
       { username: req.params.username }
     ],
-  });
+  }).exec();
 
   if (!foundUser) {
     return res.status(400).json({ message: 'Cannot find a user with this id!' });
