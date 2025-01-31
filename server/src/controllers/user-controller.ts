@@ -71,15 +71,29 @@ export const deleteBook = async (req: Request, res: Response) => {
 
 // Other controller methods like createUser, login, etc.
 export const createUser = async (req: Request, res: Response) => {
-  const user = await User.create(req.body);
+  try {
+    const { username, email, password } = req.body;
 
-  if (!user) {
-    return res.status(400).json({ message: 'Something went wrong!' });
+    // Ensure all required fields are provided
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    // Create the user in the database
+    const user = await User.create({ username, email, password });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Something went wrong!' });
+    }
+
+    // Sign the token for the newly created user
+    const token = signToken(user._id, user.email, user.username);
+
+    return res.json({ token, user });
+  } catch (error) {
+    console.error('Error creating user:', error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
-
-  const typedUser = user as UserType; // Type assertion
-  const token = signToken(typedUser.username, typedUser.password, typedUser._id);
-  return res.json({ token, user });
 };
 
 export const login = async (req: Request, res: Response) => {

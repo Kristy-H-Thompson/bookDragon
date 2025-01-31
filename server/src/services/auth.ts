@@ -43,6 +43,7 @@ export const getUserFromToken = (token: string): JwtPayload | null => {
 
 
 export const signToken = (userId: string, email: string, username: string): string => {
+  console.log('JWT Secret:', process.env.JWT_SECRET_KEY);
   try {
     const payload = { _id: userId, email, username };
     const secretKey = process.env.JWT_SECRET_KEY;
