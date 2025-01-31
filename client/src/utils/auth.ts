@@ -40,9 +40,13 @@ class AuthService {
   }
 
   login(idToken: string) {
-    // Saves user token to localStorage
-    localStorage.setItem('id_token', idToken);
-    window.location.assign('/');
+    console.log("Received idToken:", idToken);  // Log the token
+    if (idToken) {
+      localStorage.setItem('id_token', idToken);
+      window.location.assign('/');
+    } else {
+      console.error("No idToken received during login");
+    }
   }
 
   logout() {

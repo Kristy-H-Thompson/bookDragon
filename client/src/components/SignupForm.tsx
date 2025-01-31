@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
-import { createUser } from '../utils/API';
+import { createUserRequest } from '../utils/API';
 import Auth from '../utils/auth';
 import type { User } from '../models/User';
 
@@ -31,7 +31,7 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
     }
 
     try {
-      const response = await createUser(userFormData);
+      const response = await createUserRequest(userFormData);
 
       if (!response.ok) {
         throw new Error('something went wrong!');

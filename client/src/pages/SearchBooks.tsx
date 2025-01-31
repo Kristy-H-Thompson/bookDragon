@@ -69,29 +69,37 @@ const SearchBooks = () => {
     };
 
   // create function to handle saving a book to our database
-    const handleSaveBook = async (bookId: string) => {
-    // find the book in `searchedBooks` state by the matching id
-    const bookToSave: Book = searchedBooks.find((book) => book.bookId === bookId)!;
-
-    // get token
+  const handleSaveBook = async (bookId: string) => {
+    const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
+    
+    // Ensure the book is found
+    if (!bookToSave) return;
+  
     const token = Auth.loggedIn() ? Auth.getToken() : null;
-
+  
     if (!token) {
-        return false;
+      return false;
     }
-
+  
     try {
-      // Use Apollo Client mutation to save the book
-        await saveBook({
-        variables: { bookData: bookToSave },
-        });
-
-      // if book successfully saves to user's account, save book id to state
-        setSavedBookIds([...savedBookIds, bookToSave.bookId]);
-        } catch (err) {
-        console.error(err);
+      // Use Apollo Client mutation to save the book with individual fields
+      await saveBook({
+        variables: {
+          bookId: bookToSave.bookId,
+          authors: bookToSave.authors,
+          description: bookToSave.description,
+          title: bookToSave.title,
+          image: bookToSave.image,
+          link: bookToSave.link,
+        },
+      });
+  
+      // Update the state with saved book ids
+      setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+    } catch (err) {
+      console.error('Error saving book:', err);
     }
-    };
+  };
 
     return (
     <>
