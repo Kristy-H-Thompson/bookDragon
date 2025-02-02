@@ -5,8 +5,8 @@ import { ApolloServer } from 'apollo-server-express';
 import { typeDefs, resolvers } from './schemas/index.js'; 
 import db from './config/connection.js';
 import { authenticateToken } from './services/auth.js'; 
-import jwt from 'jsonwebtoken'; // Ensure this is imported
-import User from './models/User.js'; // Assuming you have a User model defined
+import jwt from 'jsonwebtoken'; 
+import User  from './models/User.js'; 
 
 const app: any = express();
 const PORT = process.env.PORT || 3001;
@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Public routes (no authentication required)
-app.post('/api/users', async (req: Request, res: Response) => {
+app.post('/api/users', async (req: Request, res: Response): Promise<Response> => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
@@ -51,10 +51,10 @@ app.post('/api/users', async (req: Request, res: Response) => {
     );
 
     // Send the token and success message
-    res.status(201).json({ message: 'User created successfully', token });
+    return res.status(201).json({ message: 'User created successfully', token });
 
   } catch (error: any) {
-    res.status(500).json({ message: 'Internal server error', error: error.message });
+    return res.status(500).json({ message: 'Internal server error', error: error.message });
   }
 });
 
@@ -84,9 +84,10 @@ const startServer = async (): Promise<void> => {
         console.log(`🌍 Now listening on localhost:${PORT}${server.graphqlPath}`);
       });
     });
+
   } catch (err) {
     console.error('Error starting the server:', err);
-    throw err; // Ensure to throw if an error happens
+    process.exit(1); // Exit the process with an error code
   }
 };
 

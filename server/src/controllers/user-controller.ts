@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import User from '../models/User.js'; 
 import { signToken } from '../services/auth.js'; 
-import Book, { BookDocument } from '../models/Book'; // Import BookDocument for typing
+import Book, { BookDocument } from '../models/Book.js'; // Import BookDocument for typing
 
 // Define the UserType interface
 interface UserType {

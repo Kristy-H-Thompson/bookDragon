@@ -39,5 +39,6 @@ const bookSchema = new Schema<BookDocument>({
 
 // Define and export the model
 const Book = model<BookDocument>('Book', bookSchema);
+export {bookSchema}
 
 export default Book;

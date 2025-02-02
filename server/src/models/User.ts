@@ -1,6 +1,7 @@
 import { Schema, model, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
-import { BookDocument } from './Book'; // Import BookDocument properly
+import { bookSchema, BookDocument } from './Book.js'; // Import BookDocument properly
+
 
 export interface UserDocument extends Document {
   _id: string;
@@ -29,12 +30,13 @@ const userSchema = new Schema<UserDocument>(
       type: String,
       required: true,
     },
-    savedBooks: [
+    /*savedBooks: [
       {
         type: Schema.Types.ObjectId,
         ref: 'Book', // Reference to the 'Book' model
       },
-    ],
+    ],*/
+    savedBooks: [bookSchema]
   },
   {
     toJSON: {

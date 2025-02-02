@@ -1,13 +1,14 @@
 import * as jwt from 'jsonwebtoken';
 import User from '../models/User.js';
-import Book from '../models/Book.js';  // Importing Book to use in the resolvers
+import Book from '../models/Book.js'; // Importing Book model
 
 const resolvers = {
   Query: {
     me: async (_: any, __: any, { user }: any) => {
-      return user; // `user` comes from the authMiddleware
+      const loggedinUser = await User.findOne({ email: user.email });
+      if (!loggedinUser) throw new Error('You need to be logged in!');
+      return loggedinUser; // `user` comes from the authMiddleware
     },
-    // Added query to fetch all books
     books: async () => {
       return await Book.find(); // Fetch all books from the database
     },
@@ -27,18 +28,33 @@ const resolvers = {
       return { token, user };
     },
     saveBook: async (_: any, { bookId, authors, description, title, image, link }: any, { user }: any) => {
-      if (!user) throw new Error('You need to be logged in!');
-      user.savedBooks.push({ bookId, authors, description, title, image, link });
-      await user.save();
-      return user;
+      const loggedinUser = await User.findOne({ email: user.email });
+      if (!loggedinUser) throw new Error('You need to be logged in!');
+
+      // Create a new Book instance using the imported Book model
+      const book = new Book({
+        bookId,
+        authors,
+        description,
+        title,
+        image,
+        link,
+      });
+
+      // Push the Book instance into the savedBooks array
+      loggedinUser.savedBooks.push(book);
+      await loggedinUser.save();
+
+      return loggedinUser;
     },
     removeBook: async (_: any, { bookId }: any, { user }: any) => {
-      if (!user) throw new Error('You need to be logged in!');
-      user.savedBooks = user.savedBooks.filter((book: any) => book.bookId !== bookId);
-      await user.save();
-      return user;
+      const loggedinUser = await User.findOne({ email: user.email });
+      if (!loggedinUser) throw new Error('You need to be logged in!');
+      loggedinUser.savedBooks = loggedinUser.savedBooks.filter((book: any) => book.bookId !== bookId);
+      await loggedinUser.save();
+      return loggedinUser;
     },
   },
 };
 
-export default resolvers
+export default resolvers;
