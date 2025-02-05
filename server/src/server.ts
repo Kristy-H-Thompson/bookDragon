@@ -46,6 +46,10 @@ app.use(
       const user = getUserFromToken(token);
       return { user };
     },
+    cors: {
+      origin: process.env.NODE_ENV === 'production' ? 'https://bookdragon.onrender.com' : 'http://localhost:10000',
+      credentials: true,
+    }
   })
 );
 
