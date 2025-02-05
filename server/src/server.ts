@@ -42,14 +42,22 @@ app.use(
   '/graphql',
   expressMiddleware(server, {
     context: async ({ req }) => {
+      console.log(req.headers);  // Log the request headers to debug
       const token = req.headers.authorization?.split(' ')[1] || '';
       const user = getUserFromToken(token);
       return { user };
     },
-    cors: {
-      origin: process.env.NODE_ENV === 'production' ? 'https://bookdragon.onrender.com' : 'http://localhost:10000',
-      credentials: true,
-    }
+  })
+);
+
+app.use(
+  '/graphql',
+  expressMiddleware(server, {
+    context: async ({ req }) => {
+      const token = req.headers.authorization?.split(' ')[1] || '';
+      const user = getUserFromToken(token);
+      return { user };
+    },
   })
 );
 
