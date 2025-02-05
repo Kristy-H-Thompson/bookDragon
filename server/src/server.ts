@@ -20,7 +20,7 @@ const MONGO_URI = 'mongodb+srv://kristynhayes:pTbo5YcUGuj6nOvP@codingbootcamp.ht
 
 // CORS configuration
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' ? 'https://bookdragon.onrender.com' : ' http://localhost:10000', // Replace with your actual frontend URL
+  origin: process.env.NODE_ENV === 'production' ? 'https://bookdragon.onrender.com' : 'http://localhost:10000', // Replace with your actual frontend URL
   credentials: true,  // Allows cookies to be sent with requests if needed
 };
 
