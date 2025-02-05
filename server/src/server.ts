@@ -15,7 +15,7 @@ const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/googlebooks';
+const MONGO_URI = 'mongodb+srv://kristynhayes:pTbo5YcUGuj6nOvP@codingbootcamp.htygz.mongodb.net/googlebooks?retryWrites=true&w=majority&appName=CodingBootCamp';
 
 
 // Middleware
@@ -53,6 +53,7 @@ if (process.env.NODE_ENV === 'production') {
 
 app.use(routes);
 console.log('Routes added...'); 7
+console.log(MONGO_URI);
 
 mongoose.connect(MONGO_URI);
 
