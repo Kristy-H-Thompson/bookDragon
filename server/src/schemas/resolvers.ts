@@ -28,6 +28,7 @@ const resolvers = {
       return { token, user };
     },
     saveBook: async (_: any, { bookId, authors, description, title, image, link }: any, { user }: any) => {
+      console.log(user);
       const loggedinUser = await User.findOne({ email: user.email });
       if (!loggedinUser) throw new Error('You need to be logged in!');
 
