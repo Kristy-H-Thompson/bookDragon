@@ -35,12 +35,13 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
 export const getUserFromToken = (token: string): JwtPayload | null => {
   if (!token) return null;
   try {
-    console.log("JWT Secret:", process.env.JWT_SECRET_KEY);
-      const secretKey = process.env.JWT_SECRET_KEY || '';
-      return jwt.verify(token, secretKey) as JwtPayload;
+    const secretKey = process.env.JWT_SECRET_KEY || 'LittleBird51423!'; // Make sure it's the correct key
+    const decoded = jwt.verify(token, secretKey) as JwtPayload;
+    console.log('Decoded JWT:', decoded); // Log the decoded JWT payload
+    return decoded;
   } catch (err) {
-      console.error('Error verifying token:', err);  // Log the error
-      return null;
+    console.error('Error verifying token:', err);  // Log any errors here
+    return null;
   }
 };
 
