@@ -1,4 +1,4 @@
-import * as jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import Book from '../models/Book.js'; // Importing Book model
 
