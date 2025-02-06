@@ -10,6 +10,8 @@ import resolvers from './schemas/resolvers.js';
 import { getUserFromToken } from './services/auth.js';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'path';
+import { JwtPayload } from './services/auth.js';
+import { Request } from 'express';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -41,11 +43,12 @@ console.log('Apollo Server started');
 app.use(
   '/graphql',
   expressMiddleware(server, {
-    context: async ({ req }) => {
+    context: async ({ req }: { req: Request }) => {
       console.log("getting auth" + req.headers);  // Log the request headers to debug
       const token = req.headers.authorization?.split(' ')[1] || '';
       const user = getUserFromToken(token);
-      return { user };
+      req.user = user as JwtPayload;
+      return req ;
     },
   })
 );

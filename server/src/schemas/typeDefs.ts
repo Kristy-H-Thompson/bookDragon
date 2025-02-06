@@ -28,6 +28,8 @@ const typeDefs = gql`
     books: [Book]  # Added the books query here
   }
 
+  
+
   type Mutation {
     login(email: String!, password: String!): Auth
     addUser(username: String!, email: String!, password: String!): Auth
