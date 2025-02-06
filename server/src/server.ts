@@ -46,7 +46,9 @@ app.use(
     context: async ({ req }: { req: Request }) => {
       console.log("getting auth" + req.headers);  // Log the request headers to debug
       const token = req.headers.authorization?.split(' ')[1] || '';
+      console.log ("token" + token)
       const user = getUserFromToken(token);
+      console.log("user + user");
       req.user = user as JwtPayload;
       return req ;
     },
