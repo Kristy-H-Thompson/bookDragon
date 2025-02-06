@@ -35,13 +35,14 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
 export const getUserFromToken = (token: string): JwtPayload | null => {
   if (!token) return null;
   try {
+    console.log("JWT Secret:", process.env.JWT_SECRET_KEY);
       const secretKey = process.env.JWT_SECRET_KEY || '';
       return jwt.verify(token, secretKey) as JwtPayload;
-  } catch {
+  } catch (err) {
+      console.error('Error verifying token:', err);  // Log the error
       return null;
   }
 };
-
 
 export const signToken = (userId: string, email: string, username: string): string => {
   console.log('JWT Secret:', process.env.JWT_SECRET_KEY);
