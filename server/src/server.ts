@@ -10,6 +10,7 @@ import resolvers from './schemas/resolvers.js';
 import { getUserFromToken } from './services/auth.js';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'path';
+import { authenticateToken } from './services/auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -38,17 +39,11 @@ const server = new ApolloServer({
 await server.start();
 console.log('Apollo Server started');
 
-app.use(
-  '/graphql',
-  expressMiddleware(server, {
-    context: async ({ req }) => {
-      console.log(req.headers);  // Log the request headers to debug
-      const token = req.headers.authorization?.split(' ')[1] || '';
-      const user = getUserFromToken(token);
-      return { user };
-    },
-  })
-);
+app.use('/graphql', expressMiddleware(server as any,
+  {
+    context: authenticateToken as any
+  }
+));
 
 app.use(
   '/graphql',
