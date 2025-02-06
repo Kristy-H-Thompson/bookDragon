@@ -1,20 +1,13 @@
 import './App.css';
 import { Outlet } from 'react-router-dom';
-import { ApolloProvider, InMemoryCache } from '@apollo/client';
-import { ApolloClient } from '@apollo/client';
 import Navbar from './components/Navbar';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const token = localStorage.getItem('id_token');  // Retrieve the token from localStorage
-console.log('Authorization Token:', token);  
-
+// Initialize Apollo Client
 const client = new ApolloClient({
-  uri: '/graphql',
-  cache: new InMemoryCache(),
-  headers: {
-    authorization: localStorage.getItem('id_token') 
-      ? `Bearer ${localStorage.getItem('id_token')}` 
-      : '', // Empty string ensures no Authorization header is sent if there's no token
-  },
+    uri: '/graphql', // Backend GraphQL endpoint
+    cache: new InMemoryCache(),
 });
 
 function App() {
