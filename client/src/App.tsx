@@ -8,7 +8,7 @@ const token = localStorage.getItem('id_token');  // Retrieve the token from loca
 console.log('Authorization Token:', token);  
 
 const client = new ApolloClient({
-  uri: 'http://localhost:10000/graphql',
+  uri: '/graphql',
   cache: new InMemoryCache(),
   headers: {
     authorization: localStorage.getItem('id_token') 
