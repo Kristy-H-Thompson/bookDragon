@@ -12,7 +12,6 @@ export interface JwtPayload {
 
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
-  console.log('Authorization Header:', authHeader);  // Log the token being sent
 
   if (authHeader) {
     const token = authHeader.split(' ')[1];
@@ -37,7 +36,6 @@ export const getUserFromToken = (token: string): JwtPayload | null => {
   try {
     const secretKey = process.env.JWT_SECRET_KEY || 'LittleBird51423!'; // Make sure it's the correct key
     const decoded = jwt.verify(token, secretKey) as JwtPayload;
-    console.log('Decoded JWT:', decoded); // Log the decoded JWT payload
     return decoded;
   } catch (err) {
     console.error('Error verifying token:', err);  // Log any errors here
@@ -46,7 +44,6 @@ export const getUserFromToken = (token: string): JwtPayload | null => {
 };
 
 export const signToken = (userId: string, email: string, username: string): string => {
-  console.log('JWT Secret:', process.env.JWT_SECRET_KEY);
   try {
     const payload = { _id: userId, email, username };
     const secretKey = process.env.JWT_SECRET_KEY;

@@ -44,11 +44,8 @@ app.use(
   '/graphql',
   expressMiddleware(server, {
     context: async ({ req }: { req: Request }) => {
-      console.log("getting auth" + req.headers);  // Log the request headers to debug
       const token = req.headers.authorization?.split(' ')[1] || '';
-      console.log ("token" + token)
       const user = getUserFromToken(token);
-      console.log("user + user");
       req.user = user as JwtPayload;
       return req ;
     },
@@ -75,7 +72,6 @@ if (process.env.NODE_ENV === 'production') {
 
 app.use(routes);
 console.log('Routes added...');
-console.log(MONGO_URI);
 
 mongoose.connect(MONGO_URI);
 
