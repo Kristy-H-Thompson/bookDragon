@@ -33,11 +33,13 @@ const resolvers = {
       if (!context.user) {
         throw new AuthenticationError('You must be logged in!');
       }
+    
       const updatedUser = await User.findByIdAndUpdate(
         context.user._id,
-        { $addToSet: { savedBooks: bookData } },
+        { $push: { savedBooks: bookData } }, // Use $push here
         { new: true, runValidators: true }
-      ).populate('savedBooks');
+      );
+    
       return updatedUser;
     },
     removeBook: async (_parent: unknown, { bookId }: { bookId: string }, context: { user: any }) => {
