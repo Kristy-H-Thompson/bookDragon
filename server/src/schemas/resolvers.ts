@@ -1,6 +1,7 @@
 import { AuthenticationError } from 'apollo-server-errors';
 import User from '../models/User.js';
 import { signToken } from '../services/auth.js';
+import Book from '../models/Book.js';
 
 const resolvers = {
   Query: {
@@ -29,31 +30,36 @@ const resolvers = {
       const token = signToken(user._id.toString(), user.email, user.username);
       return { token, user };
     },
-    saveBook: async (_parent: unknown, { bookData }: { bookData: any }, context: { user: any }) => {
-      if (!context.user) {
-        throw new AuthenticationError('You must be logged in!');
-      }
-     console.log(bookData);
-      const updatedUser = await User.findByIdAndUpdate(
-        context.user._id,
-        { $push: { savedBooks: bookData } }, // Use $push here
-        { new: true, runValidators: true }
-      );
-    
-      return updatedUser;
+    saveBook: async (_: any, { bookId, authors, description, title, image, link }: any, { user }: any) => {
+      console.log(user);
+      const loggedinUser = await User.findOne({ email: user.email });
+      if (!loggedinUser) throw new Error('You need to be logged in!');
+
+      // Create a new Book instance using the imported Book model
+      const book = new Book({
+        bookId,
+        authors,
+        description,
+        title,
+        image,
+        link,
+      });
+
+      // Push the Book instance into the savedBooks array
+      loggedinUser.savedBooks.push(book);
+      await loggedinUser.save();
+
+      return loggedinUser;
     },
-    removeBook: async (_parent: unknown, { bookId }: { bookId: string }, context: { user: any }) => {
-      if (!context.user) {
-        throw new AuthenticationError('You must be logged in!');
-      }
-      const updatedUser = await User.findByIdAndUpdate(
-        context.user._id,
-        { $pull: { savedBooks: { bookId } } },
-        { new: true }
-      );
-      return updatedUser;
+    removeBook: async (_: any, { bookId }: any, { user }: any) => {
+      const loggedinUser = await User.findOne({ email: user.email });
+      if (!loggedinUser) throw new Error('You need to be logged in!');
+      loggedinUser.savedBooks = loggedinUser.savedBooks.filter((book: any) => book.bookId !== bookId);
+      await loggedinUser.save();
+      return loggedinUser;
     },
   },
 };
 
 export default resolvers;
+
