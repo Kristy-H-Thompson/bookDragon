@@ -21,6 +21,10 @@ Technologies Used
 - Express.js
 - Mongoose
 
+Screenshots:
+- [save your books](https://i.postimg.cc/L51m13PW/saved-Books.jpg)
+- [register for an account or log in](https://i.postimg.cc/66n3TBhp/login.jpg)
+
 Deployed website link:
 [Website here](https://bookdragon.onrender.com/)
 
