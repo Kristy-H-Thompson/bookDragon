@@ -33,7 +33,7 @@ const resolvers = {
       if (!context.user) {
         throw new AuthenticationError('You must be logged in!');
       }
-    
+     console.log(bookData);
       const updatedUser = await User.findByIdAndUpdate(
         context.user._id,
         { $push: { savedBooks: bookData } }, // Use $push here
